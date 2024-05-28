@@ -11,4 +11,5 @@ lightweight_charts
 pandas_ta
 prophet
 scikit-learn
+tensorflow
 keras
