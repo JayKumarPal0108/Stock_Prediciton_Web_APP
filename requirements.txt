@@ -1,0 +1,14 @@
+yfinance
+streamlit
+pandas
+plotly
+numpy
+matplotlib
+mplfinance
+alpha_vantage
+stocknews
+lightweight_charts
+pandas_ta
+prophet
+scikit-learn
+keras
