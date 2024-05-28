@@ -13,3 +13,4 @@ prophet
 scikit-learn
 tensorflow
 keras
+sklearn
