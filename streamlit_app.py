@@ -18,6 +18,10 @@ import requests
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error
+from sklearn.preprocessing import MinMaxScaler
+from keras.models import Sequential
+from keras.layers import LSTM, Dense, InputLayer
+
 
 st.markdown("<h1 style='text-align: center;'>Stock Dashboard</h1>", unsafe_allow_html=True)
 
@@ -246,14 +250,14 @@ with Moving_Averages:
 with Model_Prediction:
     if st.button('Predict'):
 
-        from sklearn.preprocessing import MinMaxScaler
-
-        scaler = MinMaxScaler(feature_range=(0,1))
+        # Assuming Adj_close_price is defined
+        # Perform data preprocessing
+        scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(Adj_close_price)
 
+        # Prepare training data
         x_data = []
         y_data = []
-
         for i in range(100, len(scaled_data)):
             x_data.append(scaled_data[i-100:i])
             y_data.append(scaled_data[i])
@@ -263,24 +267,30 @@ with Model_Prediction:
         x_train = x_data[:splitting_len]
         y_train = y_data[:splitting_len]
 
-        x_test = x_data[splitting_len:]
-        y_test = y_data[splitting_len:]
-        from keras.models import Sequential
-        from keras.layers import Dense, LSTM, Input
+        x_data, y_data = np.array(x_data), np.array(y_data)
         
+        # Split data into training and test sets
+        splitting_len = int(len(x_data) * 0.8)
+        x_train, y_train = x_data[:splitting_len], y_data[:splitting_len]
+        x_test, y_test = x_data[splitting_len:], y_data[splitting_len:]
+        
+        # Define and compile the model
         model = Sequential()
-        model.add(Input(shape=(x_train.shape[1], 1)))  # Input layer with shape
+        model.add(InputLayer(input_shape=(x_train.shape[1], 1)))
         model.add(LSTM(128, return_sequences=True))
         model.add(LSTM(64, return_sequences=False))
         model.add(Dense(25))
         model.add(Dense(1))
-        
         model.compile(optimizer='adam', loss='mean_squared_error')
-        model.fit(x_train, y_train, batch_size=1, epochs=2)
         
+        # Train the model
+        model.fit(x_train, y_train, batch_size=1, epochs=1)
+        
+        # Make predictions
         predictions = model.predict(x_test)
         inv_predictions = scaler.inverse_transform(predictions)
         inv_y_test = scaler.inverse_transform(y_test)
+
         ploting_data = pd.DataFrame(
         {
             'original_test_data': inv_y_test.reshape(-1),
@@ -294,9 +304,12 @@ with Model_Prediction:
         plot_graph((15,6), ploting_data, 'test data')
         plot_graph((15,6), pd.concat([Adj_close_price[:splitting_len+100], ploting_data], axis=0), 'Whole Data')
         rmse = np.sqrt(mean_squared_error(inv_y_test, inv_predictions)) 
-        st.write(f'Root Mean Squared Error (RMSE): {rmse}')
-        # Calculate R-squared score
+        # Evaluate the model
+        rmse = np.sqrt(mean_squared_error(inv_y_test, inv_predictions))
         r2 = r2_score(inv_y_test, inv_predictions)
+        
+        # Display results
+        st.write(f'Root Mean Squared Error (RMSE): {rmse}')
         st.write(f'R-squared (R2) score: {r2}')
 
 with fundamental_data:
