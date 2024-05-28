@@ -14,7 +14,6 @@ import pandas_ta as ta
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from datetime import datetime
-import cufflinks as cf
 import requests
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
