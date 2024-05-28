@@ -29,7 +29,7 @@ st.sidebar.title("About Me")
 
 # Personal information
 st.sidebar.header("Jaykumar Pal")
-st.sidebar.image(r"C:\Users\Jaykumar Pal\Desktop\VS_Code\jay.jpg", caption='Jaykumar Pal', use_column_width=True)
+st.sidebar.image(r"https://github.com/JayKumarPal0108/Stock_Prediciton_Web_APP/blob/main/jay.jpg", caption='Jaykumar Pal', use_column_width=True)
 
 st.sidebar.subheader("Contact Information")
 st.sidebar.markdown("📞 Contact No: +91 9768414748")
