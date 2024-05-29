@@ -30,7 +30,7 @@ import streamlit as st
 
 # Sidebar for personal information
 st.sidebar.title("About Me")
-if st.button('Predict'):
+if st.sidebar.button('About Me'):
 
     # Personal information
     st.sidebar.header("Jaykumar Pal")
@@ -54,9 +54,9 @@ if st.button('Predict'):
 
 
 ticker = st.text_input('Ticker')
+start_date = st.date_input('Start Date',value = pd.to_datetime('2024-01-01'))
+end_date = st.date_input('End Date', value = pd.to_datetime('today'))
 if len(ticker)>0:
-    start_date = st.date_input('Start Date',value = pd.to_datetime('2024-01-01'))
-    end_date = st.date_input('End Date', value = pd.to_datetime('today'))
     
     data = yf.download(ticker, start=start_date, end=end_date)
     data.index = pd.to_datetime(data.index)
