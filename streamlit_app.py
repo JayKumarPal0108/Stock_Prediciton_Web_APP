@@ -22,11 +22,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, InputLayer
 
-
 st.markdown("<h1 style='text-align: center;'>Stock Dashboard</h1>", unsafe_allow_html=True)
-
-import streamlit as st
-
 
 # Sidebar for personal information
 st.sidebar.title("About Me")
@@ -51,7 +47,6 @@ if st.sidebar.button('About Me'):
     I am passionate about analyzing data, uncovering insights, and applying machine learning techniques to solve real-world problems.
     Feel free to reach out to me via the contact information provided.
     """)
-
 
 ticker = st.text_input('Ticker')
 start_date = st.date_input('Start Date',value = pd.to_datetime('2024-01-01'))
@@ -311,8 +306,9 @@ if len(ticker)>0:
             r2 = r2_score(inv_y_test, inv_predictions)
             
             # Display results
-            st.write(f'Root Mean Squared Error (RMSE): {rmse}')
-            st.write(f'R-squared (R2) score: {r2}')
+            
+            st.write('Root Mean Squared Error (RMSE):',rmse)
+            st.write('R-squared (R2) score:', r2)
 
             # Predict tomorrow's price
             # Use the last 100 days' data as input to the model for prediction
@@ -322,8 +318,9 @@ if len(ticker)>0:
             predicted_price_scaled = model.predict(last_100_days)
             predicted_price = scaler.inverse_transform(predicted_price_scaled)
 
-            # Display tomorrow's predicted price
-            st.write(f"Predicted Closing Price for Tomorrow: {predicted_price[0][0]:.2f}")
+            # Display predicted closing price
+            formatted_price = "{:.2f}".format(predicted_price[0][0])
+            st.write('Predicted Closing Price for Tomorrow:', formatted_price)
     
     with news:
         st.header('News')
