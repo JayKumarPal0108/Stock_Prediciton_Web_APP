@@ -358,4 +358,3 @@ if len(ticker)>0:
 
 else:
     st.write(print("Please Enter a Ticker"))
-
