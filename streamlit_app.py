@@ -22,6 +22,11 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, InputLayer
 
+st.set_page_config(page_title='Snowflake', layout='wide',
+                #    initial_sidebar_state=st.session_state.get('sidebar_state', 'collapsed'),
+)
+st.snow()
+
 st.markdown("<h1 style='text-align: center;'>Stock Dashboard</h1>", unsafe_allow_html=True)
 
 # Sidebar for personal information
