@@ -73,10 +73,10 @@ if len(ticker)>0:
     
     tickerData = yf.Ticker(ticker)
     
-    Summary, pricing_data, Forecast, Moving_Averages, Model_Prediction, fundamental_data, news = st.tabs(["Summary", "Pricing Data", "Forecast", "Moving_Averages", "Model_Prediction", "Fundamental Data", "Top 10 News"])
+    Summary, pricing_data, Forecast, Moving_Averages, Model_Prediction, news, fundamental_data = st.tabs(["Summary", "Pricing Data", "Forecast", "Moving_Averages", "Model_Prediction", "Top 10 News", "Fundamental Data"])
     
     # Summary 
-    with Summary:
+    with Summary:    
         # Initial UI
     
         buttonClicked = st.button('Set')
@@ -313,7 +313,32 @@ if len(ticker)>0:
             # Display results
             st.write(f'Root Mean Squared Error (RMSE): {rmse}')
             st.write(f'R-squared (R2) score: {r2}')
+
+            # Predict tomorrow's price
+            # Use the last 100 days' data as input to the model for prediction
+            last_100_days = scaled_data[-100:]
+            last_100_days = np.array(last_100_days).reshape((1, 100, 1))
+
+            predicted_price_scaled = model.predict(last_100_days)
+            predicted_price = scaler.inverse_transform(predicted_price_scaled)
+
+            # Display tomorrow's predicted price
+            st.write(f"Predicted Closing Price for Tomorrow: {predicted_price[0][0]:.2f}")
     
+    with news:
+        st.header('News')
+        sn = StockNews(ticker, save_news=False)
+        df_news = sn.read_rss()
+        for i in range(10):
+            st.subheader(f'News {i+1}')
+            st.write(df_news['published'][i])
+            st.write(df_news['title'][i])
+            st.write(df_news['summary'][i])
+            title_sentiment = df_news['sentiment_title'][i]
+            st.write(f'Title Sentiment: {title_sentiment}')
+            news_sentiment = df_news['sentiment_summary'][i]
+            st.write(f'News Sentiment: {news_sentiment}')
+
     with fundamental_data:
         st.header('Fundamental Data')
         key = 'PJWPPYH1QF8YECF9'
@@ -333,20 +358,6 @@ if len(ticker)>0:
         cash_flow = fd.get_cash_flow_annual(ticker)[0]
         cash_flow.columns = cash_flow.columns.str.replace(' ', '_')
         st.write(cash_flow)
-    
-    with news:
-        st.header('News')
-        sn = StockNews(ticker, save_news=False)
-        df_news = sn.read_rss()
-        for i in range(10):
-            st.subheader(f'News {i+1}')
-            st.write(df_news['published'][i])
-            st.write(df_news['title'][i])
-            st.write(df_news['summary'][i])
-            title_sentiment = df_news['sentiment_title'][i]
-            st.write(f'Title Sentiment: {title_sentiment}')
-            news_sentiment = df_news['sentiment_summary'][i]
-            st.write(f'News Sentiment: {news_sentiment}')
 
 else:
     st.write(print("Please Enter a Ticker"))
