@@ -10,7 +10,6 @@ import plotly.graph_objects as go
 from alpha_vantage.fundamentaldata import FundamentalData
 from stocknews import StockNews
 from lightweight_charts import Chart
-import pandas_ta as ta
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from datetime import datetime
