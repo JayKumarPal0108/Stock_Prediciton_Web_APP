@@ -21,7 +21,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, InputLayer
 
-st.set_page_config(page_title='Snowflake', layout='wide',
+st.set_page_config(page_title='StockPrice Prediction', layout='wide',
                 #    initial_sidebar_state=st.session_state.get('sidebar_state', 'collapsed'),
 )
 st.snow()
@@ -72,6 +72,7 @@ if len(ticker)>0:
     
     tickerData = yf.Ticker(ticker)
     
+    st.write(data)
     Summary, pricing_data, Forecast, Moving_Averages, Model_Prediction, news, fundamental_data = st.tabs(["Summary", "Pricing Data", "Forecast", "Moving_Averages", "Model_Prediction", "Top 10 News", "Fundamental Data"])
     
     # Summary 
@@ -119,7 +120,7 @@ if len(ticker)>0:
         # Combined Opening and Closing Price Chart
         st.subheader('Opening and Closing Price Chart')
         fig_price = go.Figure()
-        fig_price.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Closing Price'))
+        fig_price.add_trace(go.Scatter(x=data.index, y=data['Adj Close'], mode='lines', name='Closing Price'))
         fig_price.add_trace(go.Scatter(x=data.index, y=data['Open'], mode='lines', name='Opening Price'))
         fig_price.update_layout(title=f'{ticker} Opening and Closing Price')
         st.plotly_chart(fig_price)
@@ -138,7 +139,7 @@ if len(ticker)>0:
         fig_all_prices.add_trace(go.Scatter(x=data.index, y=data['High'], mode='lines', name='High'))
         fig_all_prices.add_trace(go.Scatter(x=data.index, y=data['Low'], mode='lines', name='Low'))
         fig_all_prices.add_trace(go.Scatter(x=data.index, y=data['Open'], mode='lines', name='Open'))
-        fig_all_prices.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close'))
+        fig_all_prices.add_trace(go.Scatter(x=data.index, y=data['Adj Close'], mode='lines', name='Close'))
         fig_all_prices.update_layout(title=f'{ticker} All Prices', xaxis=dict(showgrid=True))
         st.plotly_chart(fig_all_prices)
     
@@ -149,7 +150,7 @@ if len(ticker)>0:
                                                          open=data['Open'],
                                                          high=data['High'],
                                                          low=data['Low'],
-                                                         close=data['Close'])])
+                                                         close=data['Adj Close'])])
         fig_candlestick.update_layout(title=f'{ticker} Candlestick Chart')
         st.plotly_chart(fig_candlestick)
     
@@ -158,7 +159,7 @@ if len(ticker)>0:
         st.write(data.sort_values(by='Date', ascending=False))
     
         # Calculations
-        data['% Change'] = data['Close'] / data['Close'].shift(1)
+        data['% Change'] = data['Adj Close'] / data['Adj Close'].shift(1)
         data.dropna(inplace=True)
         annual_return = data['% Change'].mean() * 252 * 100
         st.write('Annual Return:', annual_return, '%')
@@ -236,17 +237,17 @@ if len(ticker)>0:
         for column in newdata.columns:
             plot_graph((15,5), newdata[column], column)
     
-        newdata['MA_for_250_days'] = newdata['Close'].rolling(250).mean()
-        plot_graph((15,5), newdata[['Close', 'MA_for_250_days']], 'MA_for_250_days')
+        newdata['MA_for_250_days'] = newdata['Adj Close'].rolling(250).mean()
+        plot_graph((15,5), newdata[['Adj Close', 'MA_for_250_days']], 'MA_for_250_days')
     
-        newdata['MA_for_100_days'] = newdata['Close'].rolling(100).mean()
-        plot_graph((15,5), newdata[['Close', 'MA_for_100_days']], 'MA_for_100_days')
+        newdata['MA_for_100_days'] = newdata['Adj Close'].rolling(100).mean()
+        plot_graph((15,5), newdata[['Adj Close', 'MA_for_100_days']], 'MA_for_100_days')
     
-        plot_graph((15,5), newdata[['Close', 'MA_for_100_days', 'MA_for_250_days']], 'MA')
+        plot_graph((15,5), newdata[['Adj Close', 'MA_for_100_days', 'MA_for_250_days']], 'MA')
     
-        newdata['percentage_change_cp'] = newdata['Close'].pct_change()
+        newdata['percentage_change_cp'] = newdata['Adj Close'].pct_change()
         plot_graph((15,5),newdata['percentage_change_cp'], 'Percentage_Change')
-        Adj_close_price = newdata[['Close']]
+        Adj_close_price = newdata[['Adj Close']]
     
     with Model_Prediction:
         if st.button('Predict'):
