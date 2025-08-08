@@ -1,6 +1,6 @@
 # Stock_Prediciton_Web_APP
 
-https://stockprediciton.streamlit.app/
+https://stock-price-prediction-web.streamlit.app/
 
 Welcome to the Stock Market Dashboard! This web application provides a comprehensive analysis of stock market data, including price movements, forecasts, moving averages, fundamental data, and related news. It is designed to help users gain insights into their favorite stocks and make informed investment decisions.
 
